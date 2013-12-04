@@ -1,4 +1,11 @@
 *.class
 
+# Eclipse
+.settings
+.project
+.classpath
+target
+
 # OS X
 *.DS_Store
+/target
