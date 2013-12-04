@@ -1,3 +1,5 @@
+package ch.m02.comet.afl;
+
 // $Author: beo1 $  $Date: 2013-02-19 06:59:12 +0100 (Tue, 19 Feb 2013) $ $Revision: 1435 $
 // $Source: /var/cvsreps/alli/2005-2006ws/logo/bibi/src/LogoPrimitives.java,v $
 //
