@@ -90,41 +90,41 @@ where X and nameofauthor corresponds to your team number, your first, last name 
 Grammar
 -------
 
-  Program    = "LOGO" Identifier { Subroutine } { Statement } "END"
+    Program    = "LOGO" Identifier { Subroutine } { Statement } "END"
 
-  Subroutine = "TO" Identifier { Parameter } { Statement } "END"
+    Subroutine = "TO" Identifier { Parameter } { Statement } "END"
 
-  Statement  = "CS" | "PD" | "PU" | "HT" | "ST" 
-             | "FD" NExpr | "BK" NExpr | "LT" NExpr | "RT" NExpr
-             | "WAIT" NExpr
-             | "REPEAT" NExpr "[" { Statement } "]"
-             | "IF" BExpr "[" { Statement } "]"
-             | "IFELSE" BExpr "[" { Statement } "]" "[" { Statement } "]"
-             | Identifier { NExpr }
+    Statement  = "CS" | "PD" | "PU" | "HT" | "ST" 
+               | "FD" NExpr | "BK" NExpr | "LT" NExpr | "RT" NExpr
+               | "WAIT" NExpr
+               | "REPEAT" NExpr "[" { Statement } "]"
+               | "IF" BExpr "[" { Statement } "]"
+               | "IFELSE" BExpr "[" { Statement } "]" "[" { Statement } "]"
+               | Identifier { NExpr }
 
-  NExpr      = NTerm { ( "+" | "-" )  NTerm }
+    NExpr      = NTerm { ( "+" | "-" )  NTerm }
 
-  NTerm      = NFactor { ( "*" | "/" ) NFactor }
+    NTerm      = NFactor { ( "*" | "/" ) NFactor }
 
-  NFactor    = "-" ( Number | REPCOUNT | Parameter | "(" NExpr ")" ) | 
-         Number | REPCOUNT | Parameter | "(" NExpr ")" 
+    NFactor    = "-" ( Number | REPCOUNT | Parameter | "(" NExpr ")" ) | 
+           Number | REPCOUNT | Parameter | "(" NExpr ")" 
 
-  BExpr      = BTerm { "OR" BTerm }
+    BExpr      = BTerm { "OR" BTerm }
 
-  BTerm      = BFactor { "AND" BFactor }
+    BTerm      = BFactor { "AND" BFactor }
 
-  BFactor    = "TRUE" | "FALSE" | "NOT" "(" BExpr ")" 
-       | NExpr ( "==" | "!=" | "<" | ">" | "<=" | ">=" )  NExpr 
+    BFactor    = "TRUE" | "FALSE" | "NOT" "(" BExpr ")" 
+         | NExpr ( "==" | "!=" | "<" | ">" | "<=" | ">=" )  NExpr 
 
-  Comments start with "#" with scope until the newline
+    Comments start with "#" with scope until the newline
 
-  Numbers are real numbers
+    Numbers are real numbers
 
-  Identifiers start with a letter followed by letters or digits
+    Identifiers start with a letter followed by letters or digits
 
-  Parameters are ":" followed by Identifier
+    Parameters are ":" followed by Identifier
 
-  Identifiers, parameters, keywords in uppercase only
+    Identifiers, parameters, keywords in uppercase only
 
 
 Deadline
