@@ -6,6 +6,11 @@
 	<version>1.0.0-SNAPSHOT</version>
 	<name>afl</name>
 	<packaging>pom</packaging>
+	
+	<modules>
+		<module>model</module>
+		<module>parser</module>
+	</modules>
 
 	<organization>
 		<name>Comet Engineering</name>
@@ -22,11 +27,6 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<junit.version>4.11</junit.version>
 	</properties>
-	
-	<modules>
-		<module>model</module>
-		<module>parser</module>
-	</modules>
 
 	<build>
 		<plugins>
