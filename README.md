@@ -87,6 +87,46 @@ LOGO team X, nameofauthor1, nameofauthor2
 
 where X and nameofauthor corresponds to your team number, your first, last name and "Kurzel", respectively. If you do not respect this rule your email might be ignored!
 
+Grammar
+-------
+
+  Program    = "LOGO" Identifier { Subroutine } { Statement } "END"
+
+  Subroutine = "TO" Identifier { Parameter } { Statement } "END"
+
+  Statement  = "CS" | "PD" | "PU" | "HT" | "ST" 
+             | "FD" NExpr | "BK" NExpr | "LT" NExpr | "RT" NExpr
+             | "WAIT" NExpr
+             | "REPEAT" NExpr "[" { Statement } "]"
+             | "IF" BExpr "[" { Statement } "]"
+             | "IFELSE" BExpr "[" { Statement } "]" "[" { Statement } "]"
+             | Identifier { NExpr }
+
+  NExpr      = NTerm { ( "+" | "-" )  NTerm }
+
+  NTerm      = NFactor { ( "*" | "/" ) NFactor }
+
+  NFactor    = "-" ( Number | REPCOUNT | Parameter | "(" NExpr ")" ) | 
+         Number | REPCOUNT | Parameter | "(" NExpr ")" 
+
+  BExpr      = BTerm { "OR" BTerm }
+
+  BTerm      = BFactor { "AND" BFactor }
+
+  BFactor    = "TRUE" | "FALSE" | "NOT" "(" BExpr ")" 
+       | NExpr ( "==" | "!=" | "<" | ">" | "<=" | ">=" )  NExpr 
+
+  Comments start with "#" with scope until the newline
+
+  Numbers are real numbers
+
+  Identifiers start with a letter followed by letters or digits
+
+  Parameters are ":" followed by Identifier
+
+  Identifiers, parameters, keywords in uppercase only
+
+
 Deadline
 --------
 
