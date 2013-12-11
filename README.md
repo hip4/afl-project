@@ -11,7 +11,7 @@ Logo
 
 The following link gives you a nice and simple introduction to the Logo programming language:
 
-    [A short introduction to Logo by Mike Koss](http://mckoss.com/logo/)
+[A short introduction to Logo by Mike Koss](http://mckoss.com/logo/)
 
 Assignment
 ----------
