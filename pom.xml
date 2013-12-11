@@ -51,9 +51,14 @@
 				<executions>
 					<execution>
 						<id>javacc</id>
+						<phase>compile</phase>
 						<goals>
 							<goal>javacc</goal>
 						</goals>
+						<configuration>
+							<lookAhead>2</lookAhead>
+							<isStatic>false</isStatic>
+						</configuration>
 					</execution>
 				</executions>
 			</plugin>
@@ -65,6 +70,7 @@
 					<artifactId>javacc-maven-plugin</artifactId>
 					<version>2.6</version>
 				</plugin>
+				<!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself.-->
 				<plugin>
 					<groupId>org.eclipse.m2e</groupId>
 					<artifactId>lifecycle-mapping</artifactId>
