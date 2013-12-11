@@ -6,7 +6,7 @@
 	<version>1.0.0-SNAPSHOT</version>
 	<name>afl</name>
 	<packaging>pom</packaging>
-	
+
 	<modules>
 		<module>model</module>
 		<module>parser</module>
@@ -15,13 +15,23 @@
 	<organization>
 		<name>Comet Engineering</name>
 	</organization>
+	
 	<scm>
 		<url>https://github.com/hip4/afl-project</url>
 	</scm>
+	
 	<ciManagement>
 		<system>Jenkins</system>
 		<url>http://ci.m02.ch/jenkins/</url>
 	</ciManagement>
+	
+	<distributionManagement>
+		<snapshotRepository>
+			<id>comet-artifactory</id>
+			<name>Comet Artifactory</name>
+			<url>http://ci.m02.ch/artifactory/libs-snapshot-local</url>
+		</snapshotRepository>
+	</distributionManagement>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
