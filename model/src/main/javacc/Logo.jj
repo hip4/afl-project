@@ -77,8 +77,7 @@ public class Logo {
       in = new BufferedReader(new FileReader(logoFile));
       Logo parser = new Logo(in);
       System.out.println("Processing " + logoFile.getName());
-      // TODO: set outputPath
-      parser.start();
+      parser.start(outputPath);
       System.out.println("Processing DONE");
     } catch (ParseException x) {
       System.out.println("Syntaxtic Error");
@@ -94,9 +93,8 @@ public class Logo {
           e.printStackTrace();
         }
       }
-	}
+    }
   }
-  
 }
 PARSER_END(Logo)
 
@@ -137,65 +135,74 @@ TOKEN: { <PARAMETER: <PARSEP> <IDENTIFIER> > // removes parameter separator
 SPECIAL_TOKEN : {
     <SINGLE_LINE_COMMENT: "#"(~["\n","\r"])* ("\n"|"\r"|"\r\n")? > } 
 
-void start() throws IOException:
-{ Token t; }
-{
+void start(String outputPath) throws IOException: { Token t; } {
   // logo programs start with LOGO followed by an identifier
-  <LOGO> t = <IDENTIFIER>
-  
-  // Creation of the output files
-	{
-//     // Create the HTML file for the applet
-//     htmlFile = new File(t.image.toLowerCase() + ".html");
-//     pw = new PrintWriter(new FileOutputStream(htmlFile));
-//     pw.println("<html>");
-//     pw.println("  <body>");
-//     pw.println("  <applet code='" + t.image.toLowerCase() +
-//                ".class'width=600 height=600></applet>");
-//     pw.println("  </html>");
-//     pw.println("</body>");
-//     pw.close();
-	  
-     //Create the Java file and the class
-    // javaFile = new File(t.image.toLowerCase() + ".java");
-     pw = new PrintWriter(System.out); // new FileOutputStream(javaFile)
-     pw.println("import java.awt.Graphics;\n");
-     pw.println("public class " + t.image.toLowerCase() +
-                     " extends java.applet.Applet {\n" );
-     numIndent++;
-     indent();
-     pw.println("private LogoPrimitives logo;\n");
-     pw.flush();
-     indent();
-     
-     // Open the necessary method "paint" of the applet
-     pw.println("public void paint(Graphics g) {");
-     numIndent++;
-     indent();
-     pw.println("logo = new LogoPrimitives(this);");
-     
-     pw.println();
-     pw.println("/*");
+  <LOGO> t = <IDENTIFIER> {
+    
+    // Determine class name
+    String className = t.image.substring(0, 1).toUpperCase() + t.image.substring(1).toLowerCase();
+    String packagePath = "ch" + File.separator + "m02" + File.separator + "comet" + File.separator + "afl" + File.separator + "parser";
+    // Creation of the output files
+    
+//    // Create the HTML file for the applet
+//    htmlFile = new File(t.image.toLowerCase() + ".html");
+//    pw = new PrintWriter(new FileOutputStream(htmlFile));
+//    pw.println("<html>");
+//    pw.println("  <body>");
+//    pw.println("  <applet code='" + t.image.toLowerCase() +
+//               ".class'width=600 height=600></applet>");
+//    pw.println("  </html>");
+//    pw.println("</body>");
+//    pw.close()
+	 
+    //Create the Java file and the class
+    javaFile = new File(outputPath + File.separator + packagePath + File.separator + className + ".java");
+    if (!javaFile.exists()) {
+      javaFile.getParentFile().mkdirs();
+      javaFile.createNewFile();
+    }
+    pw = new PrintWriter(new FileOutputStream(javaFile));
+    pw.println("package ch.m02.comet.afl.parser;");
+    pw.println();
+    pw.println("import java.awt.Graphics;");
+    pw.println("import ch.m02.comet.afl.parser.logo.LogoPrimitives;");
+    pw.println();
+    
+    pw.println("public class " + className +
+                    " extends java.applet.Applet {\n" );
+    numIndent++;
+    indent();
+    pw.println("private LogoPrimitives logo;\n");
+    pw.flush();
+    indent();
+    
+    // Open the necessary method "paint" of the applet
+    pw.println("public void paint(Graphics g) {");
+    numIndent++;
+    indent();
+    pw.println("logo = new LogoPrimitives(this);");
+    
+    pw.println();
+    pw.println("/*");
   }
-     
-     (statement())*
+    (statement())*
   {
-     pw.println("*/");
-     pw.println();
-     
-     // close the method "paint"
-     numIndent--;
-     indent();
-     pw.println("}");
-     pw.println();
-     
-     // close the class
-	 numIndent--;
-	 indent();
-     pw.println("}");
-     pw.flush();
-     pw.close(); 
-   }
+    pw.println("*/");
+    pw.println();
+    
+    // close the method "paint"
+    numIndent--;
+    indent();
+    pw.println("}");
+    pw.println();
+    
+    // close the class
+    numIndent--;
+    indent();
+    pw.println("}");
+    pw.flush();
+    pw.close(); 
+  }
   <END>
 }
 
