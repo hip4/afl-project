@@ -69,7 +69,6 @@ public class Logo {
     for (File f : logoFiles) {
       parseFile(f, outputPath);
     }
-
   }
   
   public static void parseFile(File logoFile, String outputPath) throws Exception {
@@ -142,12 +141,16 @@ void start() throws IOException:
 { Token t; }
 {
   // logo programs start with LOGO followed by an identifier
-//  (<SINGLE_LINE_COMMENT>)*
   <LOGO> t = <IDENTIFIER>
-  (<FORWARD> <NUM> |<RIGHTTURN> <NUM>)*
+//  (<SUBROUTINE> <IDENTIFIER> (<PARAMETER>)* (statement())* )* |
+ // 	(statement())*
+  
+//  (<FORWARD> <NUM> 
+ // 		| <RIGHTTURN> <NUM>
+  //		| <CLEARSCREEN>)*
   
   // Creation of the output files
-//   {
+	{
 //     // Create the HTML file for the applet
 //     htmlFile = new File(t.image.toLowerCase() + ".html");
 //     pw = new PrintWriter(new FileOutputStream(htmlFile));
@@ -158,17 +161,17 @@ void start() throws IOException:
 //     pw.println("  </html>");
 //     pw.println("</body>");
 //     pw.close();
-//     //Create the Java file and the class
-//     javaFile = new File(t.image.toLowerCase() + ".java");
-//     pw = new PrintWriter(new FileOutputStream(javaFile));
-//     pw.println("import java.awt.Graphics;\n");
-//     pw.println("public class " + t.image.toLowerCase() +
-//                " extends java.applet.Applet {\n" );
-//     numIndent++;
-//     indent();
-//     pw.println("private LogoPrimitives logo;\n");
-//     pw.flush();
-//   }
+     //Create the Java file and the class
+    // javaFile = new File(t.image.toLowerCase() + ".java");
+     pw = new PrintWriter(System.out); // new FileOutputStream(javaFile)
+     pw.println("import java.awt.Graphics;\n");
+     pw.println("public class " + t.image.toLowerCase() +
+                     " extends java.applet.Applet {\n" );
+     numIndent++;
+     indent();
+     pw.println("private LogoPrimitives logo;\n");
+     pw.flush();
+   }
 //  ( subroutine() )*
 //  // Open the necessary method "paint" of the applet
 //   {
@@ -177,18 +180,43 @@ void start() throws IOException:
 //     indent();
 //     pw.println("logo = new LogoPrimitives(this);");
 //     pw.println();
-//   }
-//  ( statement() )*
+//   }  
+	(statement())*
   // close the method "paint"
 //   {
 //     numIndent--;
 //     indent();
 //     pw.println("}");
-//   }
+ //  }
   // close the class
   <END>
-//   { numIndent--; indent();
-//     pw.println("}");
-//     pw.flush(); pw.close(); }
-//   }
+  /*
+   { numIndent--; indent();
+     pw.println("}");
+     pw.flush(); pw.close(); }
+   }*/
 }
+
+void statement():
+{
+	int i;
+}
+{
+	<RIGHTTURN>
+	i = getNumber()
+	{ pw.println("GO RIGHT " + i); pw.flush();}
+	|<FORWARD>
+	i = getNumber()
+	{ pw.println("GO FORWARD " + i); pw.flush(); }
+}
+
+int getNumber() throws NumberFormatException:
+{
+	Token t;
+}
+{
+	t = <NUM>
+	{ return Integer.parseInt(t.image); }
+}
+
+
