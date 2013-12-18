@@ -34,12 +34,11 @@
 				<executions>
 					<execution>
 						<id>generateApplets</id>
-						<phase>generate-sources</phase>
+						<phase>process-resources</phase>
 						<goals>
 							<goal>java</goal>
 						</goals>
 						<configuration>
-							<classpathScope>test</classpathScope>
 							<mainClass>ch.m02.comet.afl.model.Logo</mainClass>
 							<arguments>
 								<argument>${basedir}/logofiles</argument>

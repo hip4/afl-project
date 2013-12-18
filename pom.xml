@@ -16,16 +16,16 @@
 	<organization>
 		<name>Comet Engineering</name>
 	</organization>
-	
+
 	<scm>
 		<url>https://github.com/hip4/afl-project</url>
 	</scm>
-	
+
 	<ciManagement>
 		<system>Jenkins</system>
 		<url>http://ci.m02.ch/jenkins/</url>
 	</ciManagement>
-	
+
 	<distributionManagement>
 		<snapshotRepository>
 			<id>comet-artifactory</id>
@@ -70,6 +70,16 @@
 					<groupId>org.codehaus.mojo</groupId>
 					<artifactId>javacc-maven-plugin</artifactId>
 					<version>2.6</version>
+				</plugin>
+				<plugin>
+					<groupId>org.codehaus.mojo</groupId>
+					<artifactId>exec-maven-plugin</artifactId>
+					<version>1.2.1</version>
+				</plugin>
+				<plugin>
+					<groupId>org.codehaus.mojo</groupId>
+					<artifactId>build-helper-maven-plugin</artifactId>
+					<version>1.8</version>
 				</plugin>
 			</plugins>
 		</pluginManagement>
