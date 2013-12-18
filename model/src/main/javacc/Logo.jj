@@ -142,12 +142,6 @@ void start() throws IOException:
 {
   // logo programs start with LOGO followed by an identifier
   <LOGO> t = <IDENTIFIER>
-//  (<SUBROUTINE> <IDENTIFIER> (<PARAMETER>)* (statement())* )* |
- // 	(statement())*
-  
-//  (<FORWARD> <NUM> 
- // 		| <RIGHTTURN> <NUM>
-  //		| <CLEARSCREEN>)*
   
   // Creation of the output files
 	{
@@ -161,6 +155,7 @@ void start() throws IOException:
 //     pw.println("  </html>");
 //     pw.println("</body>");
 //     pw.close();
+	  
      //Create the Java file and the class
     // javaFile = new File(t.image.toLowerCase() + ".java");
      pw = new PrintWriter(System.out); // new FileOutputStream(javaFile)
@@ -171,30 +166,37 @@ void start() throws IOException:
      indent();
      pw.println("private LogoPrimitives logo;\n");
      pw.flush();
-   }
-//  ( subroutine() )*
-//  // Open the necessary method "paint" of the applet
-//   {
-//     indent(); numIndent++;
-//     pw.println("public void paint(Graphics g) {");
-//     indent();
-//     pw.println("logo = new LogoPrimitives(this);");
-//     pw.println();
-//   }  
-	(statement())*
-  // close the method "paint"
-//   {
-//     numIndent--;
-//     indent();
-//     pw.println("}");
- //  }
-  // close the class
-  <END>
-  /*
-   { numIndent--; indent();
+     indent();
+     
+     // Open the necessary method "paint" of the applet
+     pw.println("public void paint(Graphics g) {");
+     numIndent++;
+     indent();
+     pw.println("logo = new LogoPrimitives(this);");
+     
+     pw.println();
+     pw.println("/*");
+  }
+     
+     (statement())*
+  {
+     pw.println("*/");
+     pw.println();
+     
+     // close the method "paint"
+     numIndent--;
+     indent();
      pw.println("}");
-     pw.flush(); pw.close(); }
-   }*/
+     pw.println();
+     
+     // close the class
+	 numIndent--;
+	 indent();
+     pw.println("}");
+     pw.flush();
+     pw.close(); 
+   }
+  <END>
 }
 
 void statement():
