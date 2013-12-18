@@ -29,22 +29,75 @@ public class Logo {
     for (int i=0; i<numIndent; i++) { pw.print("   "); }
   }
 
-  // Main method that reads the source file ".logo" and translates it
-  // into two files: ".java" ".html"
-  public static void main(String args[]) throws ParseException,
-                                                TokenMgrError,
-                                                IOException
-  {
-    // reads the source file ".logo" (first argument of command line)
-    BufferedReader in = new BufferedReader(new FileReader(args[0]));
-    Logo parser = new Logo(in);
-    try {
-      parser.start();
-      System.out.println("DONE");
+  /**
+   * Main method that reads the source file(s) ".logo" and translates it into 
+   * two files: ".java" ".html".
+   * <p>
+   * First parameter (<code>args[0]</code>): The file for logo sources.
+   * If it is a directory all files in the directory will be translated.
+   * <p>
+   * Second (optional) parameter (<code>args[1]</code>): Output directory for
+   * the generated files. If ommited the current execution directory will be
+   * used.
+   */
+  public static void main(String args[]) throws Exception {
+    if (args.length < 1) {
+      throw new IllegalArgumentException("Need fileName/sourceDirectory as primary argument");
     }
-    catch (ParseException x) { System.out.println("Syntaxtic Error"); throw x; }
-    catch (TokenMgrError x)  { System.out.println("Lexical Error"); throw x; }
+    String inputFile = args[0];
+    System.out.println("Got input file: " + inputFile);
+	
+    String outputPath = "";
+    if (args.length >= 2) {
+      outputPath = args[1];
+      System.out.println("Got output path: " + outputPath);
+    }
+	
+    File input = new File(inputFile);
+    List<File> logoFiles = new ArrayList<File>();
+    if (input.isDirectory()) {
+      File[] inputFiles = input.listFiles(new FilenameFilter() {
+        public boolean accept(File dir, String filename) {
+          return filename.endsWith(".logo");
+        }
+      });
+      logoFiles.addAll(Arrays.asList(inputFiles));
+    } else {
+      logoFiles.add(input);
+    }
+    
+    for (File f : logoFiles) {
+      parseFile(f, outputPath);
+    }
+
   }
+  
+  public static void parseFile(File logoFile, String outputPath) throws Exception {
+	BufferedReader in = null;
+	try {
+      in = new BufferedReader(new FileReader(logoFile));
+      Logo parser = new Logo(in);
+      System.out.println("Processing " + logoFile.getName());
+      // TODO: set outputPath
+      parser.start();
+      System.out.println("Processing DONE");
+    } catch (ParseException x) {
+      System.out.println("Syntaxtic Error");
+      throw x;
+    } catch (TokenMgrError x) {
+      System.out.println("Lexical Error");
+      throw x;
+    } finally {
+	  if (in != null) {
+        try {
+          in.close();
+        } catch (Exception e) {
+          e.printStackTrace();
+        }
+      }
+	}
+  }
+  
 }
 PARSER_END(Logo)
 
