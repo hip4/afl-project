@@ -11,7 +11,6 @@ import java.awt.Color;
 
 public class LogoPrimitives {
 
-   private Applet applet;             // the applet
    private double orient,             // turtle's orientation (degrees)
                   x, y,               // turtle's position
                   x1, y1,             // auxiliary coordinates
@@ -22,7 +21,6 @@ public class LogoPrimitives {
                                       // to give it as parameter all the time
 
    public LogoPrimitives (Applet applet) {
-      this.applet = applet;
       h = applet.getGraphics();
       this.sizeX = applet.getSize().width;
       this.sizeY = applet.getSize().height;
