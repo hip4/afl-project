@@ -82,11 +82,17 @@ TOKEN: { <PARAMETER: <PARSEP> <IDENTIFIER> > // removes parameter separator
 //          { matchedToken.image=image.substring(1,image.length()); }
 }
 
+SPECIAL_TOKEN : {
+    <SINGLE_LINE_COMMENT: "#"(~["\n","\r"])* ("\n"|"\r"|"\r\n")? > } 
+
 void start() throws IOException:
 { Token t; }
 {
   // logo programs start with LOGO followed by an identifier
+//  (<SINGLE_LINE_COMMENT>)*
   <LOGO> t = <IDENTIFIER>
+  (<FORWARD> <NUM> |<RIGHTTURN> <NUM>)*
+  
   // Creation of the output files
 //   {
 //     // Create the HTML file for the applet
