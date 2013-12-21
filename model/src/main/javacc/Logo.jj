@@ -219,6 +219,73 @@ void statement():
 	{ pw.println("GO FORWARD " + i); pw.flush(); }
 }
 
+void nexpr():
+{
+	int i;
+	int res;
+}
+{
+	//nterm() ((<ADD> | <SUB>) nterm())*					// 0..1 oder 0..n
+
+	i = nterm()
+	{ res = i ; pw.println(i) ; pw.flush(); }
+	( <ADD> i = nterm()
+	  { res = res + i ; pw.println(" + " + i) ; pw.flush(); }
+	  | <SUB> i = nterm()
+	  { res = res - i ; pw.println(" - " + i) ; pw.flush(); }
+	)*
+}
+
+void nterm():
+{
+	int i;
+	int res;
+}
+{
+	//nfactor() ((<MUL> | <DIV>) nfactor())*				// 0..1 oder 0..n
+	
+	i = nfactor()
+	{ res = i ; pw.println(i) ; pw.flush(); }
+	( <MUL> i = nfactor()
+	  { res = res * i ; pw.println(" * " + i) ; pw.flush(); }
+	  | <DIV> i = nfactor()
+	  { res = res / i ; pw.println(" / " + i) ; pw.flush(); }
+	)*
+	
+}
+
+void nfactor():
+{
+}
+{
+	(<SUB> (getNumber() | <REPCOUNT> | <PARAMETER | (<LPAR> nexpr() <RPAR> ))) |
+	(		(getNumber() | <REPCOUNT> | <PARAMETER | (<LPAR> nexpr() <RPAR> )))
+}
+
+void bexpr():
+{
+	boolean b;
+}
+{
+	bterm() (<OR> bterm())*
+}
+
+void bterm():
+{
+	boolean b;
+}
+{
+	bfactor() (<AND> bfactor())*
+}
+
+void bfactor():
+{
+}
+{
+	<TRUE> | <FALSE> | (<NOT> <LPAR> bexpr() <RPAR>)
+	| nexpr() ( <EQ> | <NE> | <LT> | <GT> | <LE> | <GE> ) nexpr()
+}
+
 int getNumber() throws NumberFormatException:
 {
 	Token t;
@@ -228,4 +295,11 @@ int getNumber() throws NumberFormatException:
 	{ return Integer.parseInt(t.image); }
 }
 
-
+String getParameter():
+{
+	Token t;
+}
+{
+	t = <PARAMETER>
+	{ return "" + t.image}
+}
