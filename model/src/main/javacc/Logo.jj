@@ -294,8 +294,8 @@ void nfactor():
 {
 }
 {
-	(<SUB> (getNumber() | <REPCOUNT> | <PARAMETER | (<LPAR> nexpr() <RPAR> ))) |
-	(		(getNumber() | <REPCOUNT> | <PARAMETER | (<LPAR> nexpr() <RPAR> )))
+	(<SUB> (getNumber() | <REPCOUNT> | <PARAMETER> | (<LPAR> nexpr() <RPAR> )))
+	|(		(getNumber() | <REPCOUNT> | <PARAMETER> | (<LPAR> nexpr() <RPAR> )))
 }
 
 void bexpr():
@@ -337,5 +337,5 @@ String getParameter():
 }
 {
 	t = <PARAMETER>
-	{ return "" + t.image}
+	{ return "" + t.image; }
 }
