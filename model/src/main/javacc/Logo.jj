@@ -207,16 +207,52 @@ void start(String outputPath) throws IOException: { Token t; } {
 }
 
 void statement():
-{
+{	
+	boolean b;
 	int i;
 }
 {
-	<RIGHTTURN>
-	i = getNumber()
-	{ pw.println("GO RIGHT " + i); pw.flush();}
+	<CLEARSCREEN>
+	{ pw.println("cs();"); pw.flush(); }
+	|<PENDOWN>
+	{ pw.println("pd();"); pw.flush(); }
+	|<PENUP>
+	{ pw.println("pu();"); pw.flush(); }
 	|<FORWARD>
 	i = getNumber()
-	{ pw.println("GO FORWARD " + i); pw.flush(); }
+	{ pw.println("fd(" + i + ");"); pw.flush(); }
+	|<BACKWARD>
+	i = getNumber()
+	{ pw.println("bk(" + i + ");"); pw.flush(); }
+	|<LEFTTURN>
+	i = getNumber()
+	{ pw.println("lt(" + i + ");"); pw.flush();}
+	|<RIGHTTURN>
+	i = getNumber()
+	{ pw.println("rt(" + i + ");"); pw.flush();}
+	|<HIDETURTLE>
+	{ pw.println("ht();"); pw.flush(); }
+	|<SHOWTURTLE>
+	{ pw.println("st();"); pw.flush(); }
+	|<WAIT>
+	i = getNumber()
+	{ pw.println("wait(" + i + ");"); pw.flush(); }
+	
+	|<REPEAT>
+	i = getNumber()
+	<LBRA>(statement())*<RBRA>
+	{ pw.println("for(int i = 0 ; i < " + i + "; i++){  ????????????????????????  }"); pw.flush(); }
+	
+	|<IF>
+	b = bexpr()
+	<LBRA>(statement())*<RBRA>
+	{ pw.println("if(" + b + "){  ???????????????????  }"); pw.flush(); }
+	|<IFELSE>
+	b = bexpr()
+	<LBRA>(statement())*<RBRA><LBRA>(statement())*<RBRA>
+	{ pw.println("if(" + b + "){  ??????????????????  }else{  ????????????????????  }"); pw.flush(); }
+	|<SUBROUTINE>
+	
 }
 
 void nexpr():
@@ -225,7 +261,7 @@ void nexpr():
 	int res;
 }
 {
-	//nterm() ((<ADD> | <SUB>) nterm())*					// 0..1 oder 0..n
+	//nterm() ((<ADD> | <SUB>) nterm())*
 
 	i = nterm()
 	{ res = i ; pw.println(i) ; pw.flush(); }
@@ -242,7 +278,7 @@ void nterm():
 	int res;
 }
 {
-	//nfactor() ((<MUL> | <DIV>) nfactor())*				// 0..1 oder 0..n
+	//nfactor() ((<MUL> | <DIV>) nfactor())*
 	
 	i = nfactor()
 	{ res = i ; pw.println(i) ; pw.flush(); }
