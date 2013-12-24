@@ -182,13 +182,11 @@ void start(String outputPath) throws IOException: { Token t; } {
     indent();
     pw.println("logo = new LogoPrimitives(this);");
     
-    pw.println();
-    pw.println("/*");
+	pw.println();
   }
     (statement())*
   {
-    pw.println("*/");
-    pw.println();
+	pw.println();
     
     // close the method "paint"
     numIndent--;
@@ -213,30 +211,30 @@ void statement():
 }
 {
 	<CLEARSCREEN>
-	{ pw.println("cs();"); pw.flush(); }
+	{ pw.println("logo.cs();"); pw.flush(); }
 	|<PENDOWN>
-	{ pw.println("pd();"); pw.flush(); }
+	{ pw.println("logo.pd();"); pw.flush(); }
 	|<PENUP>
-	{ pw.println("pu();"); pw.flush(); }
+	{ pw.println("logo.pu();"); pw.flush(); }
 	|<FORWARD>
 	i = getNumber()
-	{ pw.println("fd(" + i + ");"); pw.flush(); }
+	{ pw.println("logo.fd(" + i + ");"); pw.flush(); }
 	|<BACKWARD>
 	i = getNumber()
-	{ pw.println("bk(" + i + ");"); pw.flush(); }
+	{ pw.println("logo.bk(" + i + ");"); pw.flush(); }
 	|<LEFTTURN>
 	i = getNumber()
-	{ pw.println("lt(" + i + ");"); pw.flush();}
+	{ pw.println("logo.lt(" + i + ");"); pw.flush();}
 	|<RIGHTTURN>
 	i = getNumber()
-	{ pw.println("rt(" + i + ");"); pw.flush();}
+	{ pw.println("logo.rt(" + i + ");"); pw.flush();}
 	|<HIDETURTLE>
-	{ pw.println("ht();"); pw.flush(); }
+	{ pw.println("logo.ht();"); pw.flush(); }
 	|<SHOWTURTLE>
-	{ pw.println("st();"); pw.flush(); }
+	{ pw.println("logo.st();"); pw.flush(); }
 	|<WAIT>
 	i = getNumber()
-	{ pw.println("wait(" + i + ");"); pw.flush(); }
+	{ pw.println("logo.wait(" + i + ");"); pw.flush(); }
 	
 	|<REPEAT>
 	i = getNumber()
