@@ -137,7 +137,8 @@ SPECIAL_TOKEN : {
 
 void start(String outputPath) throws IOException: { Token t; } {
   // logo programs start with LOGO followed by an identifier
-  <LOGO> t = <IDENTIFIER> {
+  <LOGO> 
+  t = <IDENTIFIER> {
     
     // Determine class name
     String className = t.image.substring(0, 1).toUpperCase() + t.image.substring(1).toLowerCase();
@@ -184,7 +185,8 @@ void start(String outputPath) throws IOException: { Token t; } {
     
 	pw.println();
   }
-    (statement())*
+  (subroutine())*
+  (statement())*
   {
 	pw.println();
     
@@ -202,6 +204,18 @@ void start(String outputPath) throws IOException: { Token t; } {
     pw.close(); 
   }
   <END>
+}
+
+void subroutine():
+{
+	Token t;
+}
+{
+	<SUBROUTINE> 
+	t = <IDENTIFIER>
+	(getParameter())*
+	(statement())*
+	<END>
 }
 
 void statement():
@@ -261,9 +275,11 @@ int nexpr():
 {
 	res = nterm()
 	{ pw.println(res) ; pw.flush(); }
-	( <ADD> i = nterm()
+	( <ADD> 
+		i = nterm()
 		{ res = res + i ; pw.println(" + " + i) ; pw.flush(); }
-		| <SUB> i = nterm()
+		| <SUB> 
+		i = nterm()
 		{ res = res - i ; pw.println(" - " + i) ; pw.flush(); }
 	)*
 	{ return res; }
@@ -277,9 +293,11 @@ int nterm():
 {
 	res = nfactor()
 	{ pw.println(res) ; pw.flush(); }
-	( <MUL> i = nfactor()
+	( <MUL> 
+		i = nfactor()
 		{ res = res * i ; pw.println(" * " + i) ; pw.flush(); }
-		| <DIV> i = nfactor()
+		| <DIV> 
+		i = nfactor()
 		{ res = res / i ; pw.println(" / " + i) ; pw.flush(); }
 	)*
 	{ return res; }
@@ -291,8 +309,14 @@ int nfactor():
 	int res = 0;
 }
 {
-	(<SUB> (getNumber() | <REPCOUNT> | <PARAMETER> | (<LPAR> nexpr() <RPAR> )))
-	|(		(getNumber() | <REPCOUNT> | <PARAMETER> | (<LPAR> nexpr() <RPAR> )))
+	(<SUB> (getNumber() 
+			| <REPCOUNT> 
+			| <PARAMETER> 
+			| (<LPAR> nexpr() <RPAR> )))
+	|(		(getNumber() 
+			| <REPCOUNT> 
+			| <PARAMETER> 
+			| (<LPAR> nexpr() <RPAR> )))
 	{ return res; }
 }
 
@@ -304,7 +328,8 @@ boolean bexpr():
 {
 	res = bterm() 
 	{ pw.println(res) ; pw.flush(); }
-	( <OR> b = bterm() 
+	( <OR> 
+		b = bterm() 
 		{ res = res || b ; pw.println(" || " + b) ; pw.flush(); }
 	)*
 	{ return res; }
@@ -318,7 +343,8 @@ boolean bterm():
 {
 	res = bfactor()
 	{ pw.println(res) ; pw.flush(); }
-	( <AND> b = bfactor()
+	( <AND> 
+		b = bfactor()
 		{ res = res && b ; pw.println(" && " + b) ; pw.flush(); }
 	)*
 	{ return res; }
@@ -330,8 +356,16 @@ boolean bfactor():
 	boolean res = false;
 }
 {
-	<TRUE> | <FALSE> | (<NOT> <LPAR> bexpr() <RPAR>)
-	| nexpr() ( <EQ> | <NE> | <LT> | <GT> | <LE> | <GE> ) nexpr()
+	<TRUE> 
+	| <FALSE> 
+	| (<NOT> <LPAR> bexpr() <RPAR>) 
+	| nexpr() ( <EQ> 
+				| <NE> 
+				| <LT> 
+				| <GT> 
+				| <LE> 
+				| <GE> 
+	) nexpr()
 	{ return res; }
 }
 
