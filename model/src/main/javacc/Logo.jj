@@ -223,32 +223,41 @@ void subroutine():
 
 void statement():
 {	
-	boolean b;
-	int i;
+	String b;
+	String i;
 }
 {
 	<CLEARSCREEN>
 	{ pw.println("logo.cs();"); pw.flush(); }
+	
 	|<PENDOWN>
 	{ pw.println("logo.pd();"); pw.flush(); }
+	
 	|<PENUP>
 	{ pw.println("logo.pu();"); pw.flush(); }
+	
 	|<FORWARD>
 	i = nexpr()
 	{ pw.println("logo.fd(" + i + ");"); pw.flush(); }
+	
 	|<BACKWARD>
 	i = nexpr()
 	{ pw.println("logo.bk(" + i + ");"); pw.flush(); }
+	
 	|<LEFTTURN>
 	i = nexpr()
 	{ pw.println("logo.lt(" + i + ");"); pw.flush();}
+	
 	|<RIGHTTURN>
 	i = nexpr()
 	{ pw.println("logo.rt(" + i + ");"); pw.flush();}
+	
 	|<HIDETURTLE>
 	{ pw.println("logo.ht();"); pw.flush(); }
+	
 	|<SHOWTURTLE>
 	{ pw.println("logo.st();"); pw.flush(); }
+	
 	|<WAIT>
 	i = nexpr()
 	{ pw.println("logo.wait(" + i + ");"); pw.flush(); }
@@ -256,7 +265,7 @@ void statement():
 	|<REPEAT>
 	{forCounter++;}
 	i = nexpr()
-	{ char c = (char)(forCounter + 104) ; pw.println("for(int " + c + " = 0 ; " + c + " < " + i + "; " + c + "++){"); pw.flush(); }
+	{ char c = (char)(forCounter + 104) ; pw.println("for(int " + c + " = 1 ; " + c + " <= " + i + "; " + c + "++){"); pw.flush(); }
 	<LBRA>(statement())*<RBRA>
 	{ pw.println("}"); pw.flush(); }
 	{forCounter--;}
@@ -275,93 +284,99 @@ void statement():
 	|<SUBROUTINE>
 }
 
-int nexpr():
+String nexpr():
 {
-	int i;
-	int res = 0;
+	String i;
+	String res = "";
 }
 {
 	res = nterm()
 	( <ADD> 
 		i = nterm()
-		{ res = res + i; }
+		{ res = res + " + " + i; }
 		| <SUB> 
 		i = nterm()
-		{ res = res - i; }
+		{ res = res + " - " + i; }
 	)*
 	{ return res; }
 }
 
-int nterm():
+String nterm():
 {
-	int i;
-	int res = 0;
+	String i;
+	String res = "";
 }
 {
 	res = nfactor()
 	( <MUL> 
 		i = nfactor()
-		{ res = res * i; }
+		{ res = res + " * " + i; }
 		| <DIV> 
 		i = nfactor()
-		{ res = res / i;}
+		{ res = res + " / " + i; }
 	)*
 	{ return res; }
 }
 
-int nfactor():
+String nfactor():
 {
 	int i;
-	int res = 0;
+	String res = "";
 }
 {
-	(<SUB> (res = getNumber() 
+	(<SUB> (i = getNumber()
+			{ res = res + "" + i;}  
 			| <REPCOUNT>
+			{ res = res + "" + (char)(forCounter + 104); }
 			| <PARAMETER> 
 			| (<LPAR> nexpr() <RPAR> )))
-	|(		(res = getNumber() 
+	|(		(i = getNumber()
+			{ res = res + "" + i;} 
 			| <REPCOUNT>
+			{ res = res + "" + (char)(forCounter + 104); }
 			| <PARAMETER> 
 			| (<LPAR> nexpr() <RPAR> )))
 	{ return res; }
 }
 
-boolean bexpr():
+String bexpr():
 {
-	boolean b;
-	boolean res = false;
+	String b;
+	String res = "";
 }
 {
 	res = bterm() 
 	( <OR> 
 		b = bterm() 
-		{ res = res || b; }
+		{ res = res + " || " + b; }
 	)*
 	{ return res; }
 }
 
-boolean bterm():
+String bterm():
 {
-	boolean b;
-	boolean res = false;
+	String b;
+	String res = "";
 }
 {
 	res = bfactor()
 	( <AND> 
 		b = bfactor()
-		{ res = res && b; }
+		{ res = res + " && " + b; }
 	)*
 	{ return res; }
 }
 
-boolean bfactor():
+String bfactor():
 {
 	boolean b;
-	boolean res = false;
+	String res = "";
 }
 {
-	<TRUE> 
+	<TRUE>
+	{ res = "TRUE"; } 
 	| <FALSE> 
+	{ res = "FALSE"; }
 	| (<NOT> <LPAR> bexpr() <RPAR>) 
 	| nexpr() ( <EQ> 
 				| <NE> 
