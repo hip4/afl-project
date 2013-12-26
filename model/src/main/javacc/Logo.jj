@@ -210,12 +210,17 @@ void start(String outputPath) throws IOException: { Token t; } {
 void subroutine():
 {
 	Token t;
+	String s;
 }
 {
 	<SUBROUTINE> 
 	t = <IDENTIFIER>
-	(getParameter())*
+	{ pw.print("private void " + t + "("); pw.flush(); }
+	(s = getParameter()
+	{ pw.print("double " + s); })*
+	{ pw.println("){"); pw.flush(); }
 	(statement())*
+	{ pw.println("}"); pw.flush(); }
 	<END>
 }
 
@@ -414,8 +419,9 @@ String getNumber() throws NumberFormatException:
 String getParameter():
 {
 	Token t;
+	String s;
 }
 {
 	t = <PARAMETER>
-	{ return "" + t.image; }
+	{ s = "" + t.image; return s.substring(1, s.length()); }
 }
