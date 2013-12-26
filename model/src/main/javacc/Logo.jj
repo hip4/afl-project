@@ -21,7 +21,8 @@ public class Logo {
   static private File javaFile, htmlFile;   // output files
   static private PrintWriter pw;            // printwriter used for every output
   static private int numIndent = 0;         // size of indentation
-
+  static private int forCounter = 0;		// for loop with i, j, k, ...
+  
   // to pretty-print the translation
   // uses numIndent and pw defined as static variables in LogoParser
   // writes in pw the numIndent times the indent string
@@ -218,6 +219,8 @@ void subroutine():
 	<END>
 }
 
+
+
 void statement():
 {	
 	boolean b;
@@ -231,40 +234,45 @@ void statement():
 	|<PENUP>
 	{ pw.println("logo.pu();"); pw.flush(); }
 	|<FORWARD>
-	i = getNumber()
+	i = nexpr()
 	{ pw.println("logo.fd(" + i + ");"); pw.flush(); }
 	|<BACKWARD>
-	i = getNumber()
+	i = nexpr()
 	{ pw.println("logo.bk(" + i + ");"); pw.flush(); }
 	|<LEFTTURN>
-	i = getNumber()
+	i = nexpr()
 	{ pw.println("logo.lt(" + i + ");"); pw.flush();}
 	|<RIGHTTURN>
-	i = getNumber()
+	i = nexpr()
 	{ pw.println("logo.rt(" + i + ");"); pw.flush();}
 	|<HIDETURTLE>
 	{ pw.println("logo.ht();"); pw.flush(); }
 	|<SHOWTURTLE>
 	{ pw.println("logo.st();"); pw.flush(); }
 	|<WAIT>
-	i = getNumber()
+	i = nexpr()
 	{ pw.println("logo.wait(" + i + ");"); pw.flush(); }
 	
 	|<REPEAT>
-	i = getNumber()
+	{forCounter++;}
+	i = nexpr()
+	{ char c = (char)(forCounter + 104) ; pw.println("for(int " + c + " = 0 ; " + c + " < " + i + "; " + c + "++){"); pw.flush(); }
 	<LBRA>(statement())*<RBRA>
-	{ pw.println("for(int i = 0 ; i < " + i + "; i++){  ????????????????????????  }"); pw.flush(); }
+	{ pw.println("}"); pw.flush(); }
+	{forCounter--;}
 	
 	|<IF>
 	b = bexpr()
+	{ pw.println("if(" + b + "){"); pw.flush(); }
 	<LBRA>(statement())*<RBRA>
-	{ pw.println("if(" + b + "){  ???????????????????  }"); pw.flush(); }
+	{ pw.println("}"); pw.flush(); }
+	
 	|<IFELSE>
 	b = bexpr()
 	<LBRA>(statement())*<RBRA><LBRA>(statement())*<RBRA>
 	{ pw.println("if(" + b + "){  ??????????????????  }else{  ????????????????????  }"); pw.flush(); }
-	|<SUBROUTINE>
 	
+	|<SUBROUTINE>
 }
 
 int nexpr():
@@ -274,13 +282,12 @@ int nexpr():
 }
 {
 	res = nterm()
-	{ pw.println(res) ; pw.flush(); }
 	( <ADD> 
 		i = nterm()
-		{ res = res + i ; pw.println(" + " + i) ; pw.flush(); }
+		{ res = res + i; }
 		| <SUB> 
 		i = nterm()
-		{ res = res - i ; pw.println(" - " + i) ; pw.flush(); }
+		{ res = res - i; }
 	)*
 	{ return res; }
 }
@@ -292,13 +299,12 @@ int nterm():
 }
 {
 	res = nfactor()
-	{ pw.println(res) ; pw.flush(); }
 	( <MUL> 
 		i = nfactor()
-		{ res = res * i ; pw.println(" * " + i) ; pw.flush(); }
+		{ res = res * i; }
 		| <DIV> 
 		i = nfactor()
-		{ res = res / i ; pw.println(" / " + i) ; pw.flush(); }
+		{ res = res / i;}
 	)*
 	{ return res; }
 }
@@ -309,12 +315,12 @@ int nfactor():
 	int res = 0;
 }
 {
-	(<SUB> (getNumber() 
-			| <REPCOUNT> 
+	(<SUB> (res = getNumber() 
+			| <REPCOUNT>
 			| <PARAMETER> 
 			| (<LPAR> nexpr() <RPAR> )))
-	|(		(getNumber() 
-			| <REPCOUNT> 
+	|(		(res = getNumber() 
+			| <REPCOUNT>
 			| <PARAMETER> 
 			| (<LPAR> nexpr() <RPAR> )))
 	{ return res; }
@@ -327,10 +333,9 @@ boolean bexpr():
 }
 {
 	res = bterm() 
-	{ pw.println(res) ; pw.flush(); }
 	( <OR> 
 		b = bterm() 
-		{ res = res || b ; pw.println(" || " + b) ; pw.flush(); }
+		{ res = res || b; }
 	)*
 	{ return res; }
 }
@@ -342,10 +347,9 @@ boolean bterm():
 }
 {
 	res = bfactor()
-	{ pw.println(res) ; pw.flush(); }
 	( <AND> 
 		b = bfactor()
-		{ res = res && b ; pw.println(" && " + b) ; pw.flush(); }
+		{ res = res && b; }
 	)*
 	{ return res; }
 }
