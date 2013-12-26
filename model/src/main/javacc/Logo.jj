@@ -320,22 +320,36 @@ String nterm():
 
 String nfactor():
 {
-	int i;
+	String i;
 	String res = "";
 }
 {
-	(<SUB> (i = getNumber()
-			{ res = res + "" + i;}  
+	(<SUB> (res = getNumber()
+			{ res = "-" + res; }
 			| <REPCOUNT>
 			{ res = res + "" + (char)(forCounter + 104); }
-			| <PARAMETER> 
-			| (<LPAR> nexpr() <RPAR> )))
-	|(		(i = getNumber()
-			{ res = res + "" + i;} 
+			| i = getParameter() 
+			{ res = res + " " + i; }
+			| (<LPAR> 
+				{ res = res + "("; }
+				i = nexpr()
+				{ res = res + " " + i; } 
+				<RPAR> 
+				{ res = res + ")"; }
+				)))
+	|(		(res = getNumber()
 			| <REPCOUNT>
 			{ res = res + "" + (char)(forCounter + 104); }
-			| <PARAMETER> 
-			| (<LPAR> nexpr() <RPAR> )))
+			| i = getParameter()
+			{ res = res + " " + i; } 
+			| (<LPAR>
+				{ res = res + "("; } 
+				i = nexpr()
+				{ res = res + " " + i; } 
+				<RPAR>
+				{ res = res + ")"; } 
+				)))
+				
 	{ return res; }
 }
 
@@ -388,13 +402,13 @@ String bfactor():
 	{ return res; }
 }
 
-int getNumber() throws NumberFormatException:
+String getNumber() throws NumberFormatException:
 {
 	Token t;
 }
 {
 	t = <NUM>
-	{ return Integer.parseInt(t.image); }
+	{ return "" + t.image; }
 }
 
 String getParameter():
