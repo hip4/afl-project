@@ -222,6 +222,10 @@ void subroutine():
 	(statement())*
 	{ pw.println("}"); pw.flush(); }
 	<END>
+	
+	t = <IDENTIFIER>										// stimmt noch nicht!!
+	s = getNumber()											// methode muss ausserhalb der main methode sein!!
+	{ pw.println(t + "(" + s + ");"); pw.flush(); }			//
 }
 
 
@@ -283,8 +287,11 @@ void statement():
 	
 	|<IFELSE>
 	b = bexpr()
-	<LBRA>(statement())*<RBRA><LBRA>(statement())*<RBRA>
-	{ pw.println("if(" + b + "){  ??????????????????  }else{  ????????????????????  }"); pw.flush(); }
+	{ pw.println("if(" + b + "){"); pw.flush(); }
+	<LBRA>(statement())*<RBRA>
+	{ pw.println("}else{"); pw.flush(); }
+	<LBRA>(statement())*<RBRA>
+	{ pw.println("}"); pw.flush(); }
 	
 	|<SUBROUTINE>
 }
@@ -388,7 +395,7 @@ String bterm():
 
 String bfactor():
 {
-	boolean b;
+	String b;
 	String res = "";
 }
 {
@@ -396,14 +403,24 @@ String bfactor():
 	{ res = "TRUE"; } 
 	| <FALSE> 
 	{ res = "FALSE"; }
-	| (<NOT> <LPAR> bexpr() <RPAR>) 
-	| nexpr() ( <EQ> 
-				| <NE> 
-				| <LT> 
-				| <GT> 
-				| <LE> 
-				| <GE> 
-	) nexpr()
+	| (<NOT> <LPAR> b = bexpr() <RPAR>) 
+	{ res = "!(" + b + ")"; }
+	| b = nexpr()
+		{ res = res + b; } 
+		( <EQ> 
+		{ res = res + " == "; }
+		| <NE>
+		{ res = res + " != "; } 
+		| <LT> 
+		{ res = res + " < "; }
+		| <GT> 
+		{ res = res + " > "; }
+		| <LE> 
+		{ res = res + " <= "; }
+		| <GE> 
+		{ res = res + " >= "; }
+	) b = nexpr()
+	{ res = res + b; }
 	{ return res; }
 }
 
