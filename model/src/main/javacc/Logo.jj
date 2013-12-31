@@ -234,16 +234,25 @@ String subroutine():
 	t = <IDENTIFIER>
 	{ functionString = "private void " + t + "("; }
 	( s = getParameter()
-		{ functionString = functionString + "double " + s; } )*		// methode muss mehrere double entgegennehmen können
+		{ functionString = functionString + "double " + s; } )
+	( s = getParameter()
+		{ functionString = functionString + " , double " + s; } )*
 	{ functionString = functionString + "){\n"; }
 	( s = statement()
 		{ functionString = functionString + s; } )*
 	{ functionString = functionString + "}\n"; }
 	<END>
 	
-	t = <IDENTIFIER>												// stimmt noch nicht!!
-	s = getNumber()													// methode muss mehrere double entgegennehmen können
-	{ res = res + t + "(" + s + ");"; } )							//
+	(s = subroutine())*											// ??????????????????????????????????
+	(s = statement())*
+		
+	t = <IDENTIFIER>
+	( s = nexpr()
+		{ res = t + "(" + s; } ) 
+	( s = nexpr()
+		{ res =  res + " , " + s; } )*	
+	)
+	{ res = res + ");"; }
 	
 	{ return res; }
 }
