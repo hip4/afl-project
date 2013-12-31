@@ -23,6 +23,8 @@ public class Logo {
   static private int numIndent = 0;         // size of indentation
   static private int forCounter = 0;		// for loop with i, j, k, ...
   
+  static private String functionString = "";
+  
   // to pretty-print the translation
   // uses numIndent and pw defined as static variables in LogoParser
   // writes in pw the numIndent times the indent string
@@ -136,7 +138,13 @@ TOKEN: { <PARAMETER: <PARSEP> <IDENTIFIER> > // removes parameter separator
 SPECIAL_TOKEN : {
     <SINGLE_LINE_COMMENT: "#"(~["\n","\r"])* ("\n"|"\r"|"\r\n")? > } 
 
-void start(String outputPath) throws IOException: { Token t; } {
+void start(String outputPath) throws IOException: 
+{ 
+	Token t; 
+	String s; 
+	String res = "";  
+} 
+{
   // logo programs start with LOGO followed by an identifier
   <LOGO> 
   t = <IDENTIFIER> {
@@ -186,8 +194,13 @@ void start(String outputPath) throws IOException: { Token t; } {
     
 	pw.println();
   }
-  (subroutine())*
-  (statement())*
+  (s = subroutine()
+  	{ res = res + s; })*
+  { pw.println(res); }
+  { res = ""; }									// clear res String
+  (s = statement()
+  	{ res = res + s; })*
+  { pw.println(res); }
   {
 	pw.println();
     
@@ -196,6 +209,9 @@ void start(String outputPath) throws IOException: { Token t; } {
     indent();
     pw.println("}");
     pw.println();
+    
+    pw.println(functionString);					// print the functions
+    functionString = "";
     
     // close the class
     numIndent--;
@@ -207,160 +223,171 @@ void start(String outputPath) throws IOException: { Token t; } {
   <END>
 }
 
-void subroutine():
+String subroutine():
 {
 	Token t;
 	String s;
+	String res = "";
 }
 {
-	<SUBROUTINE> 
+	( <SUBROUTINE> 
 	t = <IDENTIFIER>
-	{ pw.print("private void " + t + "("); pw.flush(); }
-	(s = getParameter()
-	{ pw.print("double " + s); })*
-	{ pw.println("){"); pw.flush(); }
-	(statement())*
-	{ pw.println("}"); pw.flush(); }
+	{ functionString = "private void " + t + "("; }
+	( s = getParameter()
+		{ functionString = functionString + "double " + s; } )*		// methode muss mehrere double entgegennehmen können
+	{ functionString = functionString + "){\n"; }
+	( s = statement()
+		{ functionString = functionString + s; } )*
+	{ functionString = functionString + "}\n"; }
 	<END>
 	
-	t = <IDENTIFIER>										// stimmt noch nicht!!
-	s = getNumber()											// methode muss ausserhalb der main methode sein!!
-	{ pw.println(t + "(" + s + ");"); pw.flush(); }			//
+	t = <IDENTIFIER>												// stimmt noch nicht!!
+	s = getNumber()													// methode muss mehrere double entgegennehmen können
+	{ res = res + t + "(" + s + ");"; } )							//
+	
+	{ return res; }
 }
 
 
 
-void statement():
+String statement():
 {	
 	String b;
-	String i;
+	String n;
+	String res = "";
 }
 {
-	<CLEARSCREEN>
-	{ pw.println("logo.cs();"); pw.flush(); }
+	( <CLEARSCREEN>
+	{ res = "logo.cs();\n"; }
 	
 	|<PENDOWN>
-	{ pw.println("logo.pd();"); pw.flush(); }
+	{ res = "logo.pd();\n"; }
 	
 	|<PENUP>
-	{ pw.println("logo.pu();"); pw.flush(); }
+	{ res = "logo.pu();\n"; }
 	
 	|<FORWARD>
-	i = nexpr()
-	{ pw.println("logo.fd(" + i + ");"); pw.flush(); }
+	n = nexpr()
+	{ res = "logo.fd(" + n + ");\n"; }
 	
 	|<BACKWARD>
-	i = nexpr()
-	{ pw.println("logo.bk(" + i + ");"); pw.flush(); }
+	n = nexpr()
+	{ res = "logo.bk(" + n + ");\n"; }
 	
 	|<LEFTTURN>
-	i = nexpr()
-	{ pw.println("logo.lt(" + i + ");"); pw.flush();}
+	n = nexpr()
+	{ res = "logo.lt(" + n + ");\n"; }
 	
 	|<RIGHTTURN>
-	i = nexpr()
-	{ pw.println("logo.rt(" + i + ");"); pw.flush();}
+	n = nexpr()
+	{ res = "logo.rt(" + n + ");\n"; }
 	
 	|<HIDETURTLE>
-	{ pw.println("logo.ht();"); pw.flush(); }
+	{ res = "logo.ht();\n"; }
 	
 	|<SHOWTURTLE>
-	{ pw.println("logo.st();"); pw.flush(); }
+	{ res = "logo.st();\n"; }
 	
 	|<WAIT>
-	i = nexpr()
-	{ pw.println("logo.wait(" + i + ");"); pw.flush(); }
+	n = nexpr()
+	{ res = "logo.wait(" + n + ");\n"; }
 	
 	|<REPEAT>
-	{forCounter++;}
-	i = nexpr()
-	{ char c = (char)(forCounter + 104) ; pw.println("for(int " + c + " = 1 ; " + c + " <= " + i + "; " + c + "++){"); pw.flush(); }
-	<LBRA>(statement())*<RBRA>
-	{ pw.println("}"); pw.flush(); }
-	{forCounter--;}
+	{ forCounter++; }
+	n = nexpr()
+	{ char c = (char)(forCounter + 104) ; res = "for(int " + c + " = 1 ; " + c + " <= " + n + " ; " + c + "++){\n"; }
+	<LBRA> ( n = statement()
+		{ res = res + n; } )* <RBRA>
+	{ res = res + "}\n"; }
+	{ forCounter--; }
 	
 	|<IF>
 	b = bexpr()
-	{ pw.println("if(" + b + "){"); pw.flush(); }
-	<LBRA>(statement())*<RBRA>
-	{ pw.println("}"); pw.flush(); }
+	{ res = "if(" + b + "){\n"; }
+	<LBRA> ( n = statement()
+		{ res = res + n; } )* <RBRA>
+	{ res = res + "}\n"; }
 	
 	|<IFELSE>
 	b = bexpr()
-	{ pw.println("if(" + b + "){"); pw.flush(); }
-	<LBRA>(statement())*<RBRA>
-	{ pw.println("}else{"); pw.flush(); }
-	<LBRA>(statement())*<RBRA>
-	{ pw.println("}"); pw.flush(); }
+	{ res = "if(" + b + "){\n"; }
+	<LBRA> ( n = statement()
+		{ res = res + n; } )* <RBRA>
+	{ res = res + "}else{\n"; }
+	<LBRA> ( n = statement()
+		{ res = res + n; } )* <RBRA>
+	{ res = res + "}\n"; }
 	
-	|<SUBROUTINE>
+	|<SUBROUTINE> )
+	
+	{ return res; }
 }
 
 String nexpr():
 {
-	String i;
+	String n;
 	String res = "";
 }
 {
 	res = nterm()
 	( <ADD> 
-		i = nterm()
-		{ res = res + " + " + i; }
+		n = nterm()
+		{ res = res + " + " + n; }
 		| <SUB> 
-		i = nterm()
-		{ res = res + " - " + i; }
+		n = nterm()
+		{ res = res + " - " + n; }
 	)*
 	{ return res; }
 }
 
 String nterm():
 {
-	String i;
+	String n;
 	String res = "";
 }
 {
 	res = nfactor()
 	( <MUL> 
-		i = nfactor()
-		{ res = res + " * " + i; }
+		n = nfactor()
+		{ res = res + " * " + n; }
 		| <DIV> 
-		i = nfactor()
-		{ res = res + " / " + i; }
+		n = nfactor()
+		{ res = res + " / " + n; }
 	)*
 	{ return res; }
 }
 
 String nfactor():
 {
-	String i;
+	String n;
 	String res = "";
 }
 {
-	(<SUB> (res = getNumber()
+	( <SUB> (res = getNumber()
 			{ res = "-" + res; }
 			| <REPCOUNT>
 			{ res = res + "" + (char)(forCounter + 104); }
-			| i = getParameter() 
-			{ res = res + " " + i; }
+			| n = getParameter() 
+			{ res = res + " " + n; }
 			| (<LPAR> 
 				{ res = res + "("; }
-				i = nexpr()
-				{ res = res + " " + i; } 
+				n = nexpr()
+				{ res = res + " " + n; } 
 				<RPAR> 
 				{ res = res + ")"; }
-				)))
+				) ) )
 	|(		(res = getNumber()
 			| <REPCOUNT>
 			{ res = res + "" + (char)(forCounter + 104); }
-			| i = getParameter()
-			{ res = res + " " + i; } 
+			| n = getParameter()
+			{ res = res + " " + n; } 
 			| (<LPAR>
 				{ res = res + "("; } 
-				i = nexpr()
-				{ res = res + " " + i; } 
+				n = nexpr()
+				{ res = res + " " + n; } 
 				<RPAR>
 				{ res = res + ")"; } 
-				)))
+				) ) )
 				
 	{ return res; }
 }
@@ -420,8 +447,8 @@ String bfactor():
 		| <GE> 
 		{ res = res + " >= "; }
 	) b = nexpr()
-	{ res = res + b; }
-	{ return res; }
+	{ res = res + b; 
+	  return res; }
 }
 
 String getNumber() throws NumberFormatException:
@@ -430,15 +457,16 @@ String getNumber() throws NumberFormatException:
 }
 {
 	t = <NUM>
-	{ return "" + t.image; }
+	{ return t.image; }
 }
 
 String getParameter():
 {
 	Token t;
-	String s;
+	String res;
 }
 {
 	t = <PARAMETER>
-	{ s = "" + t.image; return s.substring(1, s.length()); }
+	{ res = t.image; 
+	  return res.substring(1, res.length()); }
 }
