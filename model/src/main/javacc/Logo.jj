@@ -240,10 +240,13 @@ String subroutine():
 {
 	( <SUBROUTINE> 
 	t = <IDENTIFIER>
-	{ functionString = "private void " + t + "("; }
+	{ functionString = "private void " + t.image.toLowerCase() + "("; }
 	( s = getParameter()
-		{ functionString = functionString + " , double " + s; } )*
-	{ functionString = functionString + "){\n"; }
+		{ functionString = functionString + "double " + s + ", "; } )*
+	{
+		functionString = functionString.substring(0, functionString.length() - 2);
+		functionString = functionString + ") {\n";
+	}
 	( s = statement()
 		{ functionString = functionString + s; } )*
 	{ functionString = functionString + "}\n"; }
@@ -254,7 +257,7 @@ String subroutine():
 		
 	t = <IDENTIFIER>
 	( s = nexpr()
-		{ res = t + "(" + s; } ) 
+		{ res = t.image.toLowerCase() + "(" + s; } ) 
 	( s = nexpr()
 		{ res =  res + " , " + s; } )*	
 	)
@@ -483,5 +486,5 @@ String getParameter():
 {
 	t = <PARAMETER>
 	{ res = t.image; 
-	  return res.substring(1, res.length()); }
+	  return res.substring(1, res.length()).toLowerCase(); }
 }
