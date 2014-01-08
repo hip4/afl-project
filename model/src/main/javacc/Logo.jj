@@ -18,21 +18,21 @@ import java.util.*;
 
 public class Logo {
 
-  static private File javaFile, htmlFile;   // output files
-  static private PrintWriter pw;            // printwriter used for every output
-  static private int numIndent = 0;         // size of indentation
-  static private int forCounter = 0;		// for loop with i, j, k, ...
+  private File javaFile, htmlFile;   // output files
+  private PrintWriter pw;            // printwriter used for every output
+  private int numIndent = 0;         // size of indentation
+  private int forCounter = 0;		 // for loop with i, j, k, ...
   
-  static private String functionString = "";
+  private String functionString = "";
   
   // to pretty-print the translation
   // uses numIndent and pw defined as static variables in LogoParser
   // writes in pw the numIndent times the indent string
-  public static void indent() {
+  public void indent() {
     for (int i=0; i<numIndent; i++) { pw.print("\t"); }
   }
   
-  public static String createIndentionString() {
+  public String createIndentionString() {
   	String indentation = "";
   	for (int i=0; i<numIndent; i++) {
   		indentation += "\t";
