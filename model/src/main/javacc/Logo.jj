@@ -29,7 +29,15 @@ public class Logo {
   // uses numIndent and pw defined as static variables in LogoParser
   // writes in pw the numIndent times the indent string
   public static void indent() {
-    for (int i=0; i<numIndent; i++) { pw.print("   "); }
+    for (int i=0; i<numIndent; i++) { pw.print("\t"); }
+  }
+  
+  public static String createIndentionString() {
+  	String indentation = "";
+  	for (int i=0; i<numIndent; i++) {
+  		indentation += "\t";
+  	}
+  	return indentation;
   }
 
   /**
@@ -195,11 +203,11 @@ void start(String outputPath) throws IOException:
 	pw.println();
   }
   (s = subroutine()
-  	{ res = res + s; })*
+  	{ res = res + createIndentionString() + s; })*
   { pw.println(res); }
   { res = ""; }									// clear res String
   (s = statement()
-  	{ res = res + s; })*
+  	{ res = res + createIndentionString() + s; })*
   { pw.println(res); }
   {
 	pw.println();
@@ -304,10 +312,10 @@ String statement():
 	|<REPEAT>
 	{ forCounter++; }
 	n = nexpr()
-	{ char c = (char)(forCounter + 104) ; res = "for(int " + c + " = 1 ; " + c + " <= " + n + " ; " + c + "++){\n"; }
+	{ numIndent++; char c = (char)(forCounter + 104) ; res = "for(int " + c + " = 1 ; " + c + " <= " + n + " ; " + c + "++) {\n"; }
 	<LBRA> ( n = statement()
-		{ res = res + n; } )* <RBRA>
-	{ res = res + "}\n"; }
+		{ res = res + createIndentionString() +  n; } )* <RBRA>
+	{ numIndent--; res = res + createIndentionString() + "}\n"; }
 	{ forCounter--; }
 	
 	|<IF>
