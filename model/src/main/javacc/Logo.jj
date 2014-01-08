@@ -150,7 +150,8 @@ void start(String outputPath) throws IOException:
 { 
 	Token t; 
 	String s; 
-	String res = "";  
+	String res = "";
+	List<String> functions = new ArrayList<String>();
 } 
 {
   // logo programs start with LOGO followed by an identifier
@@ -203,9 +204,12 @@ void start(String outputPath) throws IOException:
 	pw.println();
   }
   (s = subroutine()
-  	{ res = res + createIndentionString() + s; })*
-  { pw.println(res); }
-  { res = ""; }									// clear res String
+  	{ 
+	  functions.add(createIndentionString() + s); 
+  	}
+  )*
+//  { pw.println(res); }
+//  { res = ""; }									// clear res String
   (s = statement()
   	{ res = res + createIndentionString() + s; })*
   { pw.println(res); }
@@ -218,8 +222,8 @@ void start(String outputPath) throws IOException:
     pw.println("}");
     pw.println();
     
-    pw.println(functionString);					// print the functions
-    functionString = "";
+    for (String function : functions)
+    	pw.println(function);					// print the functions
     
     // close the class
     numIndent--;
@@ -240,29 +244,29 @@ String subroutine():
 {
 	( <SUBROUTINE> 
 	t = <IDENTIFIER>
-	{ functionString = "private void " + t.image.toLowerCase() + "("; }
+	{ res = "private void " + t.image.toLowerCase() + "("; }
 	( s = getParameter()
-		{ functionString = functionString + "double " + s + ", "; } )*
+		{ res = res + "double " + s + ", "; } )*
 	{
-		functionString = functionString.substring(0, functionString.length() - 2);
-		functionString = functionString + ") {\n";
+		res = res.substring(0, res.length() - 2);
+		res = res + ") {\n";
 	}
 	( s = statement()
-		{ functionString = functionString + s; } )*
-	{ functionString = functionString + "}\n"; }
+		{ res = res + s; } )*
+	{ res = res + "}\n"; }
 	<END>
 	
-	(s = subroutine())*											// ??????????????????????????????????
-	(s = statement())*
+//	(s = subroutine())*											// ??????????????????????????????????
+//	(s = statement())*
 		
-	t = <IDENTIFIER>
-	( s = nexpr()
-		{ res = t.image.toLowerCase() + "(" + s; } ) 
-	( s = nexpr()
-		{ res =  res + " , " + s; } )*	
+//	t = <IDENTIFIER>
+//	( s = nexpr()
+//		{ res = t.image.toLowerCase() + "(" + s; } ) 
+//	( s = nexpr()
+//		{ res =  res + " , " + s; } )*	
 	)
-	{ res = res + ");"; }
-	
+//	{ res = res + ");"; }
+//	
 	{ return res; }
 }
 
@@ -272,6 +276,7 @@ String statement():
 {	
 	String b;
 	String n;
+	Token t;
 	String res = "";
 }
 {
@@ -321,14 +326,14 @@ String statement():
 	
 	|<IF>
 	b = bexpr()
-	{ res = "if(" + b + "){\n"; }
+	{ res = "if (" + b + "){\n"; }
 	<LBRA> ( n = statement()
 		{ res = res + n; } )* <RBRA>
 	{ res = res + "}\n"; }
 	
 	|<IFELSE>
 	b = bexpr()
-	{ res = "if(" + b + "){\n"; }
+	{ res = "if (" + b + "){\n"; }
 	<LBRA> ( n = statement()
 		{ res = res + n; } )* <RBRA>
 	{ res = res + "}else{\n"; }
@@ -336,7 +341,15 @@ String statement():
 		{ res = res + n; } )* <RBRA>
 	{ res = res + "}\n"; }
 	
-	|<SUBROUTINE> )
+	| t = <IDENTIFIER>
+	{ res = t.image.toLowerCase() + "("; }
+	(n = nexpr()
+	{ res = res + n + ", "; }
+	)*
+	{ 
+		res = res.substring(0, res.length() - 2);
+		res = res + ");\n"; }
+	)
 	
 	{ return res; }
 }
