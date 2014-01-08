@@ -11,7 +11,7 @@ options {
 
 PARSER_BEGIN(Logo)
 package ch.m02.comet.afl.model;
-
+Vbcgh
 import java.lang.*;
 import java.io.*;
 import java.util.*;
