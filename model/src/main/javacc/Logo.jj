@@ -242,8 +242,6 @@ String subroutine():
 	t = <IDENTIFIER>
 	{ functionString = "private void " + t + "("; }
 	( s = getParameter()
-		{ functionString = functionString + "double " + s; } )
-	( s = getParameter()
 		{ functionString = functionString + " , double " + s; } )*
 	{ functionString = functionString + "){\n"; }
 	( s = statement()
