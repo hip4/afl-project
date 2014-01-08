@@ -386,11 +386,11 @@ String nfactor():
 			| <REPCOUNT>
 			{ res = res + "" + (char)(forCounter + 104); }
 			| n = getParameter() 
-			{ res = res + " " + n; }
+			{ res = res + n; }
 			| (<LPAR> 
 				{ res = res + "("; }
 				n = nexpr()
-				{ res = res + " " + n; } 
+				{ res = res + n; } 
 				<RPAR> 
 				{ res = res + ")"; }
 				) ) )
@@ -398,11 +398,11 @@ String nfactor():
 			| <REPCOUNT>
 			{ res = res + "" + (char)(forCounter + 104); }
 			| n = getParameter()
-			{ res = res + " " + n; } 
+			{ res = res + n; } 
 			| (<LPAR>
 				{ res = res + "("; } 
 				n = nexpr()
-				{ res = res + " " + n; } 
+				{ res = res + n; } 
 				<RPAR>
 				{ res = res + ")"; } 
 				) ) )
