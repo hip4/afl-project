@@ -1,35 +1,38 @@
-Logo Project
-============
-      
- 
-
-    
+# Report - Logo Project
 
 
-Authors:
+##### Authors:
+
 Bürgi Christian burgc5@bfh.ch
+ 
 Haring Patrick  harip1@bfh.ch
+ 
 Leiser Michael  leism3@bfh.ch
 
-Class:
+##### Class:
+
 I3r
 
-Location:
+##### Location:
+
 Biel/Bienne
 
-Date:
+##### Date:
+
 10.01.2014
 
-Version:
+##### Version:
+
 1
 
-Introduction
-------------
+## Introduction
+
 
 This mini-project represents a parser for Logo for Java using JavaCC. The parser was implemented during the module "Automata and formal languages".
 
-Grammar				//modifictions we have done
--------
+
+## Grammar
+
 
     Program    = "LOGO" Identifier { Subroutine } { Statement } "END"
 
@@ -68,27 +71,25 @@ Grammar				//modifictions we have done
     Identifiers, parameters, keywords in uppercase only
 
 
-Solution
---------
+## Solution
 
     
 The implementation of the parse tree was straight-forward by transerfing the given Grammar into a tree structure, where each node in the tree representing a java method call in the Logo.jj file.
 These mehods also contain the generated java code, which is return as a String in the return statements of the methods.
 On top of the call hierarchy they are finally printed out.
 
-REPCOUNT
 The "REPCOUNT" which is actually a "for-loop" in java, has no variable or counter name in logo but has one in java. We had to create a counter name which is not the same in a nested loop. So we have added an int variable in Logo.jj which is incremented when entering a "REPCOUNT" statement and decremented when leaving this statement. The int variable can be castet to a char variable which can be used as a unique counter variable name.
     
 
-Test
-----
+## Test
+
 
 We have created the pictures with the .logo files and "Microsoft Windows Logo".
 We have created the pictures with the .java files and "Eclipse" with the "LogoPrimitives.class".
 Then we have checked the generated pictures against each other and they're looking equally.
 
 
-Limitations
------------
+## Limitations
+
 
 The Direction of the Turtle in java is per default in the right direction whereas in logo is in the top direction.
