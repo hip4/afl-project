@@ -161,18 +161,19 @@ void start(String outputPath) throws IOException:
     // Determine class name
     String className = t.image.substring(0, 1).toUpperCase() + t.image.substring(1).toLowerCase();
     String packagePath = "ch" + File.separator + "m02" + File.separator + "comet" + File.separator + "afl" + File.separator + "parser";
+
     // Creation of the output files
     
-//    // Create the HTML file for the applet
-//    htmlFile = new File(t.image.toLowerCase() + ".html");
-//    pw = new PrintWriter(new FileOutputStream(htmlFile));
-//    pw.println("<html>");
-//    pw.println("  <body>");
-//    pw.println("  <applet code='" + t.image.toLowerCase() +
-//               ".class'width=600 height=600></applet>");
-//    pw.println("  </html>");
-//    pw.println("</body>");
-//    pw.close()
+    // Create the HTML file for the applet
+    htmlFile = new File(t.image.toLowerCase() + ".html");
+    pw = new PrintWriter(new FileOutputStream(htmlFile));
+    pw.println("<html>");
+    pw.println("  <body>");
+    pw.println("  <applet code='" + className + "Applet" +
+               ".class' width='600' height='600'></applet>");
+    pw.println("  </body>");
+    pw.println("</html>");
+    pw.flush();
 	 
     //Create the Java file and the class
     javaFile = new File(outputPath + File.separator + packagePath + File.separator + className + ".java");
@@ -187,8 +188,7 @@ void start(String outputPath) throws IOException:
     pw.println("import ch.m02.comet.afl.parser.logo.LogoPrimitives;");
     pw.println();
     
-    pw.println("public class " + className +
-                    " extends java.applet.Applet {\n" );
+    pw.println("public class " + className + " extends java.applet.Applet {\n" );
     numIndent++;
     indent();
     pw.println("private LogoPrimitives logo;\n");
@@ -208,8 +208,6 @@ void start(String outputPath) throws IOException:
 	  functions.add(createIndentionString() + s); 
   	}
   )*
-//  { pw.println(res); }
-//  { res = ""; }									// clear res String
   (s = statement()
   	{ res = res + createIndentionString() + s; })*
   { pw.println(res); }
