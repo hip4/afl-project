@@ -71,8 +71,14 @@ Grammar				//modifictions we have done
 Solution
 --------
 
-    Solution: Description of your solution. How you have treated certain parts, in particular the translation of the REPCOUNT reserved identifier.
-  
+    
+The implementation of the parse tree was straight-forward by transerfing the given Grammar into a tree structure, where each node in the tree representing a java method call in the Logo.jj file.
+These mehods also contain the generated java code, which is return as a String in the return statements of the methods.
+On top of the call hierarchy they are finally printed out.
+
+REPCOUNT
+The "REPCOUNT" which is actually a "for-loop" in java, has no variable or counter name in logo but has one in java. We had to create a counter name which is not the same in a nested loop. So we have added an int variable in Logo.jj which is incremented when entering a "REPCOUNT" statement and decremented when leaving this statement. The int variable can be castet to a char variable which can be used as a unique counter variable name.
+    
 
 Test
 ----
