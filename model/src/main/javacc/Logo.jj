@@ -165,7 +165,11 @@ void start(String outputPath) throws IOException:
     // Creation of the output files
     
     // Create the HTML file for the applet
-    htmlFile = new File(t.image.toLowerCase() + ".html");
+    htmlFile = new File(outputPath + File.separator + packagePath + File.separator + t.image.toLowerCase() + ".html");
+    if (!htmlFile.exists()) {
+        htmlFile.getParentFile().mkdirs();
+        htmlFile.createNewFile();
+    }
     pw = new PrintWriter(new FileOutputStream(htmlFile));
     pw.println("<html>");
     pw.println("  <body>");
@@ -193,8 +197,21 @@ void start(String outputPath) throws IOException:
     indent();
     pw.println("private LogoPrimitives logo;\n");
     pw.flush();
-    indent();
     
+    indent();
+    pw.println("// This method is mandatory, but can be empty (i.e., have no actual code).");
+   	
+   	indent();
+   	pw.println("public void init() {}\n");
+   	
+   	indent();
+    pw.println("// This method is mandatory, but can be empty (i.e., have no actual code).");
+   	
+   	indent();
+    pw.println("public void stop() {}\n");
+    
+    
+    indent();
     // Open the necessary method "paint" of the applet
     pw.println("public void paint(Graphics g) {");
     numIndent++;
